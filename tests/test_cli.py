@@ -143,13 +143,13 @@ def clean_server():
     shutil.copyfile("/etc/resolv.conf.orig", "/etc/resolv.conf")
 
 def test_cli_setup_authority():
-    #assert os.getuid() == 0, "Run tests as root in a clean VM or container"
-    assert check_output(["/bin/hostname", "-f"]) == b"ca.example.lan\n", "As a safety precaution, unittests only run in a machine whose hostanme -f  is ca.example.lan"
+    assert os.getuid() == 0 # "Run tests as root in a clean VM or container"
+    assert check_output(["/bin/hostname", "-f"]) == b"ca.example.lan\n" # "As a safety precaution, unittests only run in a machine whose hostanme -f  is ca.example.lan"
 
     os.system("apt-get install -q -y git build-essential python-dev libkrb5-dev")
 
-    assert not os.environ.get("KRB5CCNAME"), "Environment contaminated"
-    assert not os.environ.get("KRB5_KTNAME"), "Environment contaminated"
+    assert not os.environ.get("KRB5CCNAME") # "Environment contaminated"
+    assert not os.environ.get("KRB5_KTNAME") # "Environment contaminated"
 
     # Mock Fedora
     for util in "/usr/bin/chcon", "/usr/bin/dnf", "/usr/bin/update-ca-trust", "/usr/sbin/dmidecode":
@@ -239,13 +239,13 @@ def test_cli_setup_authority():
     else:
         os.waitpid(bootstrap_pid, 0)
 
-    assert os.getuid() == 0 and os.getgid() == 0, "Environment contaminated"
+    assert os.getuid() == 0 and os.getgid() == 0 # "Environment contaminated"
 
 
     # Make sure nginx is running
-    assert os.system("nginx -t") == 0, "invalid nginx configuration"
+    assert os.system("nginx -t") == 0 # "invalid nginx configuration"
     os.system("service nginx restart")
-    assert os.path.exists("/run/nginx.pid"), "nginx wasn't started up properly"
+    assert os.path.exists("/run/nginx.pid") # "nginx wasn't started up properly"
 
     # Make sure we generated legit CA certificate
     from certidude import config, authority, auth, user
@@ -308,7 +308,7 @@ def test_cli_setup_authority():
     # TODO: assert nothing else is in the list
 
     # Check that we can retrieve empty CRL
-    assert authority.export_crl(), "Failed to export CRL"
+    assert authority.export_crl() # "Failed to export CRL"
     r = requests.get("http://ca.example.lan/api/revoked/")
     assert r.status_code == 200, r.text
 
